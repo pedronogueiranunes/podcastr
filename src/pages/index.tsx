@@ -4,52 +4,16 @@ import  Image  from "next/image";
 import Link from "next/link";
 import ptBR from "date-fns/locale/pt-BR"
 import {format, parseISO} from "date-fns"
+import Slider from "rc-slider"
+import "rc-slider/assets/index.css"
 
-import { api } from "../services/api";
-import { convertDurationToTimeString } from "../utils/convertDurationToTimeString";
-import { PlayerContext } from "../contexts/PlayerContext";
+import { api } from "../services/api"
+import { convertDurationToTimeString } from "../utils/convertDurationToTimeString"
+import { PlayerContext } from "../contexts/PlayerContext"
 
-import styles from "./home.module.scss";
-//SPA
-/*
- useEffect(() => {
-  fetch("http://localhost:3333/episodes")
-    .then(response => response.json())
-    .then(data => console.table(data))
-}, []);
+import styles from "./home.module.scss"
 
-*/
 
-//SSR
-/*
-export async function getServerSideProps() {
-  const response = await fetch("http://localhost:3333/episodes")
-  const data = await response.json()
-
-  return {
-    props: {
-      episodes: data,
-    }
-  }
-}
-*/
-
-//SSG
-/* 
-
-export async function getStaticProps() {
-  const response = await fetch("http://localhost:3333/episodes")
-  const data = await response.json()
-
-  return {
-    props: {
-      episodes: data,
-    },
-    revalidate: 60 * 60 * 8
-  }
-}
-*/
- 
 type Episode = {
   id: string;
   title: string;
@@ -68,6 +32,7 @@ type HomeProps = {
 }
 
 export default function Home({latestEpisodes, allEpisodes}: HomeProps) {
+  
   const { play } = useContext(PlayerContext)
 
   return (

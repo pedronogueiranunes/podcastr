@@ -32,7 +32,7 @@ type EpisodeProps = {
 
 // componente da pagina
 export default function Episode({ episode }: EpisodeProps) {
-
+ 
 
 
   return (
