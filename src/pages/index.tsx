@@ -1,13 +1,15 @@
-import { useEffect } from "react"
+import { useContext, useEffect } from "react"
 import { GetStaticProps, GetStaticPropsContext } from "next"
-import { api } from "../services/api";
-import {format, parseISO} from "date-fns"
-import ptBR from "date-fns/locale/pt-BR"
-import { convertDurationToTimeString } from "../utils/convertDurationToTimeString";
-import styles from "./home.module.scss";
 import  Image  from "next/image";
 import Link from "next/link";
+import ptBR from "date-fns/locale/pt-BR"
+import {format, parseISO} from "date-fns"
 
+import { api } from "../services/api";
+import { convertDurationToTimeString } from "../utils/convertDurationToTimeString";
+import { PlayerContext } from "../contexts/PlayerContext";
+
+import styles from "./home.module.scss";
 //SPA
 /*
  useEffect(() => {
@@ -34,6 +36,7 @@ export async function getServerSideProps() {
 
 //SSG
 /* 
+
 export async function getStaticProps() {
   const response = await fetch("http://localhost:3333/episodes")
   const data = await response.json()
@@ -46,6 +49,7 @@ export async function getStaticProps() {
   }
 }
 */
+ 
 type Episode = {
   id: string;
   title: string;
@@ -64,11 +68,12 @@ type HomeProps = {
 }
 
 export default function Home({latestEpisodes, allEpisodes}: HomeProps) {
+  const { play } = useContext(PlayerContext)
 
   return (
     <div className={styles.homepage}>
       <section className={styles.latestEpisodes}>
-        <h2>Ultimos lançamentos</h2>
+        <h2>Ultimos lançamentos {play}</h2>
         <ul>
           {latestEpisodes.map(episode => {
             return (
@@ -77,7 +82,7 @@ export default function Home({latestEpisodes, allEpisodes}: HomeProps) {
                 width={192} 
                 height={192} 
                 src={episode.thumbnail} 
-                alt={episode.title}
+                alt={episode.title} 
                 objectFit="cover"
                 />
                 
@@ -90,7 +95,7 @@ export default function Home({latestEpisodes, allEpisodes}: HomeProps) {
                   <span>{episode.durationAsString}</span>
                 </div> 
 
-                <button type="button">
+                <button type="button" onClick={() => play(episode)}>
                   <img src="/play-green.svg" alt="Tocar episodio"/>
                 </button>
 
@@ -164,7 +169,9 @@ export default function Home({latestEpisodes, allEpisodes}: HomeProps) {
   )
 }
 
+// chama api para pegar dados e gerar lista
 export const getStaticProps: GetStaticProps = async () => {
+  
   const { data } = await api.get("episodes", {
     params: {
       _limit: 12,
@@ -197,15 +204,3 @@ const allEpisodes = episodes.slice(2,episodes.length)
     revalidate: 60 * 60 * 8,
   }
 }
-/*
-export async function getStaticProps() {
-  const response = await fetch("http://localhost:3333/episodes")
-  const data = await response.json()
-
-  return {
-    props: {
-      episodes: data,
-    },
-    revalidate: 60 * 60 * 8
-  }
-} */

@@ -11,6 +11,8 @@ import { convertDurationToTimeString } from '../../utils/convertDurationToTimeSt
 import styles from "./episode.module.scss";
 import Image from 'next/image';
 
+
+// tipos
 type Episode = {
   id: string;
   title: string;
@@ -28,8 +30,9 @@ type EpisodeProps = {
   episode: Episode
 }
 
+// componente da pagina
 export default function Episode({ episode }: EpisodeProps) {
-   
+
 
 
   return (
@@ -66,15 +69,33 @@ export default function Episode({ episode }: EpisodeProps) {
     </div>
   )
 }
- 
 
+
+// funcoes de static generation
 export const getStaticPaths: GetStaticPaths = async () => {
+  
+  const { data } = await api.get("episodes", {
+    params: {
+      _limit: 12,
+      _sort: `published_at`,
+      _order: `desc`
+    }
+  })
+
+  const paths = data.map(episode => {
+    return {
+      params: {
+        slug: episode.id
+      }
+    }
+  })
+  
+  
   return {
-    paths: [],
-    fallback: "blocking"
+    paths,
+   fallback: "blocking" //incremental static regeneration
   }
 }
-
 
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
