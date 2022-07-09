@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { useRouter } from 'next/router'
 import { GetStaticPaths, GetStaticProps } from 'next';
 import {format, parseISO} from "date-fns";
@@ -10,6 +10,7 @@ import { convertDurationToTimeString } from '../../utils/convertDurationToTimeSt
 
 import styles from "./episode.module.scss";
 import Image from 'next/image';
+import { usePlayer } from '../../contexts/PlayerContext';
 
 
 // tipos
@@ -33,7 +34,7 @@ type EpisodeProps = {
 // componente da pagina
 export default function Episode({ episode }: EpisodeProps) {
  
-
+const { play } = usePlayer()
 
   return (
     <div className={styles.episode}>
@@ -50,7 +51,7 @@ export default function Episode({ episode }: EpisodeProps) {
         objectFit="cover"
         alt={episode.title}
         />
-        <button type='button'>
+        <button type='button' onClick={() => play(episode)}>
           <img src='/play.svg' alt='Tocar episodio' />
         </button>
       </div>

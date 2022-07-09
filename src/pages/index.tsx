@@ -1,15 +1,15 @@
-import { useContext, useEffect } from "react"
+
 import { GetStaticProps, GetStaticPropsContext } from "next"
 import  Image  from "next/image";
 import Link from "next/link";
 import ptBR from "date-fns/locale/pt-BR"
 import {format, parseISO} from "date-fns"
-import Slider from "rc-slider"
+
 import "rc-slider/assets/index.css"
 
 import { api } from "../services/api"
 import { convertDurationToTimeString } from "../utils/convertDurationToTimeString"
-import { PlayerContext } from "../contexts/PlayerContext"
+import { usePlayer } from "../contexts/PlayerContext"
 
 import styles from "./home.module.scss"
 
@@ -35,7 +35,7 @@ type HomeProps = {
 // home
 export default function Home({latestEpisodes, allEpisodes}: HomeProps) {
 
-  const { playList } = useContext(PlayerContext)
+  const { playList } = usePlayer()
 
   const episodeList = [...latestEpisodes, ...allEpisodes];
 
